@@ -21,7 +21,7 @@ warnings.filterwarnings('ignore')
 # 설정
 # ============================================================
 st.set_page_config(
-    page_title="투자 대시보드 | Emori Style",
+    page_title="중요투자 데이터 대시보드",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -198,7 +198,7 @@ def metric_card(label, value, delta=None, delta_color="normal"):
 # 사이드바
 # ============================================================
 with st.sidebar:
-    st.markdown("## 📊 에모리 스타일 대시보드")
+    st.markdown("## 📊 중요투자 데이터 대시보드")
     st.markdown("---")
 
     page = st.radio("페이지 선택", [
@@ -228,8 +228,8 @@ with st.sidebar:
 # 페이지 1: 종합 대시보드
 # ============================================================
 if page == "🏠 종합 대시보드":
-    st.title("📊 종합 투자 대시보드")
-    st.caption("에모리(江守哲) 채널 데이터 소스 기반 | 23개 무료 데이터 통합")
+    st.title("📊 중요투자 데이터 대시보드")
+    st.caption("23개 무료 데이터 소스 통합 | 거시경제 · 시장 · 자금흐름 · 섹터 분석")
 
     # 주요 지수 현황
     col1, col2, col3, col4, col5, col6 = st.columns(6)
@@ -739,7 +739,7 @@ elif page == "🎯 섹터 로테이션":
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #8899AA; font-size: 12px;'>
-📊 에모리 스타일 투자 대시보드 | 데이터 소스: FRED, Yahoo Finance, WGC, FINRA 등 23개<br>
+📊 중요투자 데이터 대시보드 | 데이터 소스: FRED, Yahoo Finance, WGC, FINRA 등 23개<br>
 본 대시보드는 정보 제공 목적이며, 투자 권유가 아닙니다.
 </div>
 """, unsafe_allow_html=True)
