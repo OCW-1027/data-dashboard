@@ -1,5 +1,5 @@
 """
-에모리 스타일 투자 대시보드 - Emori-Style Investment Dashboard
+Everybody Investment - 중요투자 데이터 대시보드
 =============================================================
 23개 무료 데이터 소스를 활용한 거시경제·시장분석 대시보드
 """
@@ -199,6 +199,7 @@ def metric_card(label, value, delta=None, delta_color="normal"):
 # ============================================================
 with st.sidebar:
     st.markdown("## 📊 중요투자 데이터 대시보드")
+    st.caption("by Everybody Investment")
     st.markdown("---")
 
     page = st.radio("페이지 선택", [
@@ -229,7 +230,7 @@ with st.sidebar:
 # ============================================================
 if page == "🏠 종합 대시보드":
     st.title("📊 중요투자 데이터 대시보드")
-    st.caption("23개 무료 데이터 소스 통합 | 거시경제 · 시장 · 자금흐름 · 섹터 분석")
+    st.caption("Everybody Investment | 23개 무료 데이터 소스 통합 | 거시경제 · 시장 · 자금흐름 · 섹터 분석")
 
     # 주요 지수 현황
     col1, col2, col3, col4, col5, col6 = st.columns(6)
@@ -542,8 +543,8 @@ elif page == "🥇 금 & 원자재":
             st.plotly_chart(fig, use_container_width=True)
 
     with tab3:
-        st.markdown("### 🔄 Gold → Copper → Energy 순환 (에모리 분석)")
-        st.markdown("에모리 채널의 핵심 테제: **금이 먼저 오르고, 구리가 따라오고, 마지막으로 에너지가 상승**하는 패턴")
+        st.markdown("### 🔄 Gold → Copper → Energy 순환 패턴")
+        st.markdown("**금이 먼저 오르고, 구리가 따라오고, 마지막으로 에너지가 상승**하는 섹터 순환 패턴")
 
         rotation_tickers = {
             "금광주 (GDX)": "GDX",
@@ -694,7 +695,7 @@ elif page == "🎯 섹터 로테이션":
         st.plotly_chart(fig, use_container_width=True)
 
     # 3대 변수 모니터
-    st.markdown("### 🔑 에모리 3대 변수 모니터")
+    st.markdown("### 🔑 3대 핵심 변수 모니터")
     st.markdown("**금리 → IT/REIT  |  경기 → 소비재/산업재  |  인플레 → 에너지/소재**")
 
     c1, c2, c3 = st.columns(3)
@@ -739,7 +740,7 @@ elif page == "🎯 섹터 로테이션":
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #8899AA; font-size: 12px;'>
-📊 중요투자 데이터 대시보드 | 데이터 소스: FRED, Yahoo Finance, WGC, FINRA 등 23개<br>
-본 대시보드는 정보 제공 목적이며, 투자 권유가 아닙니다.
+📊 <strong>Everybody Investment</strong> · 중요투자 데이터 대시보드<br>
+데이터 소스: FRED, Yahoo Finance, WGC, FINRA 등 23개 | 본 대시보드는 정보 제공 목적이며, 투자 권유가 아닙니다.
 </div>
 """, unsafe_allow_html=True)
