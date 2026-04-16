@@ -27,7 +27,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-FRED_API_KEY = "DEMO_KEY"  # 무료 키 (하루 120회 제한). 본인 키 발급: https://fred.stlouisfed.org/docs/api/api_key.html
+# FRED API Key: Streamlit Cloud Secrets에서 자동 로드, 없으면 DEMO_KEY 사용
+# 본인 키 발급 (무료): https://fredaccount.stlouisfed.org/apikeys
+try:
+    FRED_API_KEY = st.secrets["FRED_API_KEY"]
+except Exception:
+    FRED_API_KEY = "DEMO_KEY"
 
 COLORS = {
     'bg': '#0F1A2E', 'card': '#1A2744', 'accent': '#E8A838',
