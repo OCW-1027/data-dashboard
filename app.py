@@ -69,7 +69,7 @@ def calc_pres_cycle():
     return avg
 
 # === 차트 유틸 ===
-def layout(fig, title, yaxis="", src="", h=400, xrot=0):
+def layout(fig, title, ya="", src="", h=400, xrot=0):
     ann = []
     if src:
         ann.append(dict(text=f"📊 출처: {src}", xref="paper", yref="paper",
@@ -79,7 +79,7 @@ def layout(fig, title, yaxis="", src="", h=400, xrot=0):
         paper_bgcolor=C['card'], plot_bgcolor=C['bg'],
         font=dict(color=C['text'], size=11),
         xaxis=dict(gridcolor=C['grid'], tickangle=xrot, tickfont=dict(size=10)),
-        yaxis=dict(title=dict(text=yaxis, font=dict(size=11)), gridcolor=C['grid'], tickfont=dict(size=10)),
+        yaxis=dict(title=dict(text=ya, font=dict(size=11)), gridcolor=C['grid'], tickfont=dict(size=10)),
         legend=dict(
             orientation="h", yanchor="top", y=-0.12, xanchor="center", x=0.5,
             font=dict(size=11, color=C['white']),
@@ -124,18 +124,43 @@ with st.sidebar:
 if page == "🏠 종합 대시보드":
     st.title("📊 중요투자 데이터 대시보드")
     st.caption("Everybody Investment | 실시간 글로벌 시장 모니터링")
-    c1,c2,c3,c4,c5,c6 = st.columns(6)
-    for col,(nm,tk,u) in zip([c1,c2,c3,c4,c5,c6],[
+
+    # Reduce metric value font size so full numbers are visible
+    st.markdown("""
+    <style>
+    [data-testid="stMetricValue"] { font-size: 1.5rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.85rem !important; }
+    [data-testid="stMetricDelta"] { font-size: 0.85rem !important; }
+    </style>
+    """, unsafe_allow_html=True)
+
+    metrics_data = [
         ("S&P 500","^GSPC","pt"),("NASDAQ","^IXIC","pt"),("금(Gold)","GC=F","$/oz"),
-        ("WTI원유","CL=F","$/bbl"),("미국10Y","^TNX","%"),("달러DXY","DX-Y.NYB","pt")]):
+        ("WTI원유","CL=F","$/bbl"),("미국10Y","^TNX","%"),("달러DXY","DX-Y.NYB","pt")
+    ]
+    # First row: 3 metrics
+    r1 = st.columns(3)
+    for col, (nm, tk, u) in zip(r1, metrics_data[:3]):
         with col:
-            d=yfd(tk,"5d")
-            if len(d)>=2:
-                cur,prev=d['Close'].iloc[-1],d['Close'].iloc[-2]
-                chg=((cur/prev)-1)*100
-                if u=="%": col.metric(nm, f"{cur:.2f}%", f"{chg:+.2f}%")
-                elif cur>1000: col.metric(nm, f"{cur:,.0f}", f"{chg:+.2f}%")
+            d = yfd(tk, "5d")
+            if len(d) >= 2:
+                cur, prev = d['Close'].iloc[-1], d['Close'].iloc[-2]
+                chg = ((cur/prev)-1)*100
+                if u == "%": col.metric(nm, f"{cur:.2f}%", f"{chg:+.2f}%")
+                elif cur > 1000: col.metric(nm, f"{cur:,.0f}", f"{chg:+.2f}%")
                 else: col.metric(nm, f"{cur:.2f}", f"{chg:+.2f}%")
+    # Second row: 3 metrics
+    r2 = st.columns(3)
+    for col, (nm, tk, u) in zip(r2, metrics_data[3:]):
+        with col:
+            d = yfd(tk, "5d")
+            if len(d) >= 2:
+                cur, prev = d['Close'].iloc[-1], d['Close'].iloc[-2]
+                chg = ((cur/prev)-1)*100
+                if u == "%": col.metric(nm, f"{cur:.2f}%", f"{chg:+.2f}%")
+                elif cur > 1000: col.metric(nm, f"{cur:,.0f}", f"{chg:+.2f}%")
+                else: col.metric(nm, f"{cur:.2f}", f"{chg:+.2f}%")
+
     st.markdown("---")
     c1,c2 = st.columns(2)
     with c1:
