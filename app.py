@@ -73,15 +73,19 @@ def layout(fig, title, yaxis="", src="", h=400, xrot=0):
     ann = []
     if src:
         ann.append(dict(text=f"📊 출처: {src}", xref="paper", yref="paper",
-            x=0, y=-0.13, showarrow=False, font=dict(size=9, color=C['sub'])))
+            x=0, y=-0.28, showarrow=False, font=dict(size=9, color=C['sub'])))
     fig.update_layout(
-        title=dict(text=f"<b>{title}</b>", font=dict(size=14, color=C['white']), x=0.01),
+        title=dict(text=f"<b>{title}</b>", font=dict(size=14, color=C['white']), x=0.01, y=0.98),
         paper_bgcolor=C['card'], plot_bgcolor=C['bg'],
         font=dict(color=C['text'], size=11),
         xaxis=dict(gridcolor=C['grid'], tickangle=xrot, tickfont=dict(size=10)),
         yaxis=dict(title=dict(text=yaxis, font=dict(size=11)), gridcolor=C['grid'], tickfont=dict(size=10)),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=10)),
-        height=h, margin=dict(l=60, r=20, t=50, b=65 if src else 40), annotations=ann)
+        legend=dict(
+            orientation="h", yanchor="top", y=-0.12, xanchor="center", x=0.5,
+            font=dict(size=11, color=C['white']),
+            bgcolor="rgba(26,39,68,0.9)", bordercolor=C['grid'], borderwidth=1,
+        ),
+        height=h, margin=dict(l=60, r=20, t=40, b=110 if src else 90), annotations=ann)
     return fig
 
 def lchart(sd, title, ya="", src="", h=400, zero=False):
@@ -98,7 +102,8 @@ def lchart(sd, title, ya="", src="", h=400, zero=False):
 def hbar(labels, vals, title, src="", h=400):
     colors = [C['green'] if v>=0 else C['red'] for v in vals]
     fig = go.Figure(go.Bar(y=labels, x=vals, orientation='h', marker_color=colors,
-        text=[f"{v:+.1f}%" for v in vals], textposition='outside', textfont=dict(size=10)))
+        text=[f"{v:+.1f}%" for v in vals], textposition='outside', textfont=dict(size=10),
+        showlegend=False))
     fig.update_layout(yaxis=dict(autorange="reversed"))
     return layout(fig, title, "", src, h)
 
