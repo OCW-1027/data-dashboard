@@ -125,7 +125,7 @@ with st.sidebar:
 # ============================================================
 if page == "📖 투자 판단 가이드":
     st.title("📖 투자 판단 가이드")
-    st.caption("대시보드 사용법 + 시장 판단 기준 (영상 강의 기반)")
+    st.caption("대시보드 사용법 + 시장 판단 기준")
 
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "🗺️ 대시보드 지도", "🎯 3대 핵심 변수", "🧭 판단 프레임워크",
@@ -149,7 +149,7 @@ if page == "📖 투자 판단 가이드":
 
         st.markdown("## 💡 대시보드 활용의 5가지 원칙")
         st.markdown("""
-1. **"과거 데이터를 우선, 뉴스는 후순위"** — 강의 핵심 메시지. 이슈(재료)는 시장이 이미 반영한 경우가 많음. 실제 움직인 데이터로 판단.
+1. **"과거 데이터를 우선, 뉴스는 후순위"** — 이슈(재료)는 시장이 이미 반영한 경우가 많음. 실제 움직인 데이터로 판단.
 2. **"하나의 지표만 보지 말고 여러 지표의 일치를 확인"** — 예: 일드커브 역전 + HY 스프레드 상승 + VIX 급등이 동시 발생해야 신뢰.
 3. **"방향이 바뀌는 순간을 포착"** — 절대 수준보다 변화 방향이 중요. Delta(변화분) 주시.
 4. **"극단적 상황을 기다림"** — VIX 30+, HY 스프레드 5%+ 같은 명확한 시그널에서만 큰 베팅.
@@ -322,7 +322,7 @@ if page == "📖 투자 판단 가이드":
 
     with tab5:
         st.markdown("## 💼 자산 규모별 투자 전략")
-        st.caption("강의에서 제시된 단계별 접근 (개인 자산 기준)")
+        st.caption("자산 규모별 단계별 접근")
 
         st.markdown("""
 ### 💰 Stage 1: ~5천만엔 (약 4.5억원)
@@ -373,8 +373,6 @@ if page == "📖 투자 판단 가이드":
   2. **언제** 살 것인가 (Timing)
   3. **얼마나** 살 것인가 (Allocation)
 """)
-
-        st.info("💡 **창우님 상황**: PE 1.5억엔 + 회장님 개인법인 자금운용 = Stage 3 (1억엔+) 전략 적용 권장. 대시보드의 🎯 섹터 로테이션과 🌍 글로벌 자산 페이지가 주요 활용 대상.")
 
 
 # ============================================================
@@ -508,13 +506,13 @@ elif page == "📈 거시경제 지표":
 
 elif page == "📋 미국경제 종합표":
     st.title("📋 미국 경제지표 종합표")
-    st.caption("영상 '米経済指標' 슬라이드 재현 | FRED 실시간 데이터")
+    st.caption("미국 주요 경제지표 실시간 종합 | FRED 데이터")
 
     tab1, tab2, tab3 = st.tabs(["📊 종합 테이블", "💼 고용 상세", "🏭 ISM & 생산"])
 
     with tab1:
         st.markdown("### 📅 월별 주요 경제지표 추이 (최근 15개월)")
-        st.caption("강의 슬라이드 14번 재현 - 녹색: 전월 대비 개선 / 빨간색: 악화")
+        st.caption("녹색: 전월 대비 개선 / 빨간색: 악화")
 
         # Gather data
         indicators = {
@@ -563,7 +561,7 @@ elif page == "📋 미국경제 종합표":
 
     with tab2:
         st.markdown("### 💼 미국 고용 상황 (NFP·실업률·임금)")
-        st.caption("영상 슬라이드 18 재현")
+        st.caption("NFP(비농업고용) + 실업률 + 평균 시급 추이")
 
         c1, c2 = st.columns(2)
         with c1:
@@ -599,7 +597,7 @@ elif page == "📋 미국경제 종합표":
 
     with tab3:
         st.markdown("### 🏭 ISM & 산업 활동 지표")
-        st.caption("영상 슬라이드 15 참조 - ISM PMI vs S&P500 상관관계")
+        st.caption("ISM PMI · 산업생산 · 소매판매 · 주택 지표")
 
         # ISM proxy via FRED (실제 ISM PMI는 유료, NAPM은 대체)
         napm = fred("NAPM", "2000-01-01")  # ISM Manufacturing PMI (historical)
@@ -701,9 +699,9 @@ elif page == "🥇 금·원자재·에너지":
             layout(fig,"금 가격 vs 10Y 실질금리 (역상관, 우축 반전)",src="Yahoo Finance (GC=F) + FRED (DFII10)")
             st.plotly_chart(fig,use_container_width=True)
 
-        # 금 상승 사이클 비교 (영상 슬라이드 49 재현)
+        # 금 상승 사이클 비교
         st.markdown("### 🔄 금 상승 패턴 비교: 3대 Bull Market")
-        st.caption("영상 슬라이드 49 'ゴールドの上昇パターン' 재현 - 각 사이클 시작점 = 100")
+        st.caption("과거 금 Bull Market 3개 사이클 비교 - 각 사이클 시작점 = 100")
 
         # Historical gold data - use approximate historical prices
         # Cycle 1: 1968-1980 (from $35 to $850)
@@ -813,9 +811,9 @@ elif page == "🥇 금·원자재·에너지":
                     src="Yahoo Finance (NG=F, NYMEX)")
                 st.plotly_chart(fig, use_container_width=True)
 
-        # OPEC production data (영상 슬라이드 53-55 반영)
+        # OPEC production data
         st.markdown("### 🛢️ OPEC 원유 생산량 추이")
-        st.caption("영상 슬라이드 53-55 'OPEC産油量' 재현 | FRED + EIA 데이터")
+        st.caption("FRED + EIA 데이터")
 
         c1, c2 = st.columns(2)
         with c1:
@@ -839,7 +837,7 @@ elif page == "🥇 금·원자재·에너지":
                 st.plotly_chart(fig, use_container_width=True)
 
         st.markdown("""
-        ### 📌 원유 투자 포인트 (영상 강의 기반)
+        ### 📌 원유 투자 포인트
         - **생산비 하한선 $50/bbl** = WTI가 이 아래로 지속되면 생산 감소 → 반등 가능성
         - **OPEC 감산** = 가격 지지 신호
         - **미국 셰일 생산** = 주요 공급 충격 요인
@@ -938,7 +936,7 @@ elif page == "🎯 섹터 로테이션":
 
 elif page == "🌍 글로벌 자산 수익률":
     st.title("🌍 글로벌 주요 자산 수익률")
-    st.caption("영상 '主要資産のリターン' 스타일 | Yahoo Finance 실시간")
+    st.caption("글로벌 주요 자산 수익률 비교 | Yahoo Finance 실시간")
     yr=st.selectbox("비교",["올해 YTD","2025년","2024년"],index=0)
     ps=f"{datetime.now().year}-01-01" if yr=="올해 YTD" else "2025-01-01" if yr=="2025년" else "2024-01-01"
     assets={"S&P 500":"^GSPC","NASDAQ":"^IXIC","다우30":"^DJI","Russell 2000":"^RUT",
