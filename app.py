@@ -13,6 +13,9 @@ from plotly.subplots import make_subplots
 from datetime import datetime
 import requests
 import warnings
+
+# 섹터 로테이션 → 종목 스크리너 연결 (같은 리포의 screener_link.py)
+from screener_link import render_sector_links, render_quick_links
 warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="중요투자 데이터 대시보드", page_icon="📊", layout="wide", initial_sidebar_state="expanded")
@@ -121,6 +124,12 @@ with st.sidebar:
     ], index=0)
     st.markdown("---")
     st.caption(f"업데이트: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    st.markdown("---")
+    st.markdown("**🔗 종목 스크리너**")
+    st.caption("거시·섹터에서 방향을 잡고 → 개별 종목으로")
+    for _n, _mk in [("🇯🇵 일본", "jp"), ("🇰🇷 한국", "kr"), ("🇺🇸 미국", "us")]:
+        st.link_button(_n, f"https://stock-screener-ev3.pages.dev/{_mk}/",
+                       use_container_width=True)
 
 # ============================================================
 if page == "📖 투자 판단 가이드":
@@ -933,6 +942,10 @@ elif page == "🎯 섹터 로테이션":
             cur,prev=be.iloc[-1],be.iloc[-30] if len(be)>30 else be.iloc[0]
             st.metric("기대인플레 (FRED T10YIE)",f"{cur:.2f}%",f"{cur-prev:+.2f}%pt")
             st.caption("에너지/소재 유리 🛢️" if cur>prev else "성장주 유리 💻")
+
+    # ── 종목 스크리너로 연결 ──
+    st.markdown("---")
+    render_sector_links(st, list(sm.keys()))
 
 elif page == "🌍 글로벌 자산 수익률":
     st.title("🌍 글로벌 주요 자산 수익률")

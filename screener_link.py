@@ -37,7 +37,7 @@ SECTOR_MAP = {
     "XLI":  ("산업재", "기계·제조"),
     "XLB":  ("소재", "소재·금속"),
     "XLY":  ("소비재", "내구소비재"),
-    "XLP":  ("필수소비재", "필수소비재"),
+    "XLP":  ("필수소비", "필수소비재"),
     "XLU":  ("유틸리티", "유틸리티"),
     "XLRE": ("부동산", "상업서비스"),        # 스크리너에 부동산 업종이 없어 근사
     "XLC":  ("통신", "통신"),
@@ -85,13 +85,15 @@ def sector_links(label, tab=None):
     return {name: sector_url(label, mk, tab) for name, mk in MARKETS}
 
 
-def render_sector_links(st, labels, tab=None, title="이 섹터의 종목 보기"):
+def render_sector_links(st, labels=None, tab=None, title="이 섹터의 종목 보기"):
     """Streamlit에 섹터별 링크 버튼을 렌더링.
 
     st       : streamlit 모듈
     labels   : ['IT(XLK)', '금융(XLF)', ...]  (섹터 차트에 쓴 라벨 그대로)
     tab      : 스크리너 진입 탭. 예) 'grow'(성장주) 'sup'(수급) 'long'(중장기)
     """
+    if labels is None:                      # 기본값: 11섹터 전부
+        labels = list(SECTOR_MAP.keys())
     st.markdown(f"#### 🔗 {title}")
     st.caption("거시·섹터에서 방향을 잡고 → 그 섹터의 개별 종목으로. "
                "유동성 하한이 걸린 채로 열립니다.")
