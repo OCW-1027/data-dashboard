@@ -26,6 +26,7 @@ from urllib.parse import quote
 
 BASE = "https://stock-screener-ev3.pages.dev"     # Cloudflare (GitHub Pages도 동일 구조)
 MARKETS = [("일본", "jp"), ("한국", "kr"), ("미국", "us")]
+MARKETS_JA = {"일본": "日本", "한국": "韓国", "미국": "米国"}
 
 # SPDR 11섹터 ETF → 스크리너 업종명 (한 섹터가 여러 업종에 걸치면 대표 1개)
 # 스크리너 업종은 3개 시장 공통 20종.
@@ -67,7 +68,7 @@ def _etf_code(label):
     return None
 
 
-def sector_url(label, market="jp", tab=None, extra_sector=None):
+def sector_url(label, market="jp", tab=None, extra_sector=None, lang="ko"):
     """섹터 라벨 → 스크리너 URL. 업종을 못 찾으면 필터 없이 시장 첫 화면."""
     code = _etf_code(label)
     sector = extra_sector or (SECTOR_MAP[code][1] if code else None)
@@ -77,15 +78,16 @@ def sector_url(label, market="jp", tab=None, extra_sector=None):
     q.append(f"min={MIN_TURNOVER.get(market, 10)}")
     if tab:
         q.append(f"tab={tab}")
-    return f"{BASE}/{market}/?" + "&".join(q)
+    prefix = "ja/" if lang == "ja" else ""        # 일본어면 스크리너도 일본어판
+    return f"{BASE}/{prefix}{market}/?" + "&".join(q)
 
 
-def sector_links(label, tab=None):
+def sector_links(label, tab=None, lang="ko"):
     """{'일본': url, '한국': url, '미국': url}"""
-    return {name: sector_url(label, mk, tab) for name, mk in MARKETS}
+    return {name: sector_url(label, mk, tab, lang=lang) for name, mk in MARKETS}
 
 
-def render_sector_links(st, labels=None, tab=None, title="이 섹터의 종목 보기"):
+def render_sector_links(st, labels=None, tab=None, title=None, lang="ko"):
     """Streamlit에 섹터별 링크 버튼을 렌더링.
 
     st       : streamlit 모듈
@@ -94,9 +96,12 @@ def render_sector_links(st, labels=None, tab=None, title="이 섹터의 종목 �
     """
     if labels is None:                      # 기본값: 11섹터 전부
         labels = list(SECTOR_MAP.keys())
-    st.markdown(f"#### 🔗 {title}")
-    st.caption("거시·섹터에서 방향을 잡고 → 그 섹터의 개별 종목으로. "
-               "유동성 하한이 걸린 채로 열립니다.")
+    ja = (lang == "ja")
+    st.markdown("#### 🔗 " + (title or
+                ("このセクターの銘柄を見る" if ja else "이 섹터의 종목 보기")))
+    st.caption("マクロ・セクターで方向を掴み → そのセクターの個別銘柄へ。流動性の下限が掛かった状態で開きます。"
+               if ja else
+               "거시·섹터에서 방향을 잡고 → 그 섹터의 개별 종목으로. 유동성 하한이 걸린 채로 열립니다.")
     for label in labels:
         code = _etf_code(label)
         if not code:
@@ -105,12 +110,14 @@ def render_sector_links(st, labels=None, tab=None, title="이 섹터의 종목 �
         cols = st.columns([2, 1, 1, 1])
         cols[0].markdown(f"**{ko}** · `{main}`")
         for i, (name, mk) in enumerate(MARKETS, start=1):
-            cols[i].link_button(name, sector_url(label, mk, tab), use_container_width=True)
+            cols[i].link_button(MARKETS_JA[name] if ja else name,
+                                sector_url(label, mk, tab, lang=lang),
+                                use_container_width=True)
         extras = SECTOR_EXTRA.get(code, [])
         if extras:
             links = " · ".join(
-                f"[{e}]({sector_url(label, 'jp', tab, extra_sector=e)})" for e in extras)
-            st.caption(f"　└ 관련 업종: {links}")
+                f"[{e}]({sector_url(label, 'jp', tab, extra_sector=e, lang=lang)})" for e in extras)
+            st.caption(("　└ 関連業種: " if ja else "　└ 관련 업종: ") + links)
 
 
 def render_quick_links(st):
