@@ -16,7 +16,7 @@ import warnings
 
 # 섹터 로테이션 → 종목 스크리너 연결 (같은 리포의 screener_link.py)
 from screener_link import render_sector_links, render_quick_links
-from i18n_dash import T, lang_selector
+from i18n_dash import T, T2, lang_selector
 warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="중요투자 데이터 대시보드", page_icon="📊", layout="wide", initial_sidebar_state="expanded")
@@ -76,8 +76,8 @@ def calc_pres_cycle():
 def layout(fig, title, ya="", src="", h=400, xrot=0):
     # 차트 제목·축 라벨·출처는 모든 그래프가 이 함수를 거치므로 여기서 한 번에 번역한다
     _L = globals().get("LANG", "ko")
-    title = T(title, _L)
-    ya = T(ya, _L)
+    title = T2(title, _L)          # f-string 제목은 부분 치환까지
+    ya = T2(ya, _L)
     _src_label = "出典" if _L == "ja" else "출처"
     ann = []
     if src:
@@ -417,9 +417,9 @@ elif page == "🏠 종합 대시보드":
             if len(d) >= 2:
                 cur, prev = d['Close'].iloc[-1], d['Close'].iloc[-2]
                 chg = ((cur/prev)-1)*100
-                if u == "%": col.metric(nm, f"{cur:.2f}%", f"{chg:+.2f}%")
-                elif cur > 1000: col.metric(nm, f"{cur:,.0f}", f"{chg:+.2f}%")
-                else: col.metric(nm, f"{cur:.2f}", f"{chg:+.2f}%")
+                if u == "%": col.metric(T(nm, LANG), f"{cur:.2f}%", f"{chg:+.2f}%")
+                elif cur > 1000: col.metric(T(nm, LANG), f"{cur:,.0f}", f"{chg:+.2f}%")
+                else: col.metric(T(nm, LANG), f"{cur:.2f}", f"{chg:+.2f}%")
     # Second row: 3 metrics
     r2 = st.columns(3)
     for col, (nm, tk, u) in zip(r2, metrics_data[3:]):
@@ -428,37 +428,37 @@ elif page == "🏠 종합 대시보드":
             if len(d) >= 2:
                 cur, prev = d['Close'].iloc[-1], d['Close'].iloc[-2]
                 chg = ((cur/prev)-1)*100
-                if u == "%": col.metric(nm, f"{cur:.2f}%", f"{chg:+.2f}%")
-                elif cur > 1000: col.metric(nm, f"{cur:,.0f}", f"{chg:+.2f}%")
-                else: col.metric(nm, f"{cur:.2f}", f"{chg:+.2f}%")
+                if u == "%": col.metric(T(nm, LANG), f"{cur:.2f}%", f"{chg:+.2f}%")
+                elif cur > 1000: col.metric(T(nm, LANG), f"{cur:,.0f}", f"{chg:+.2f}%")
+                else: col.metric(T(nm, LANG), f"{cur:.2f}", f"{chg:+.2f}%")
 
     st.markdown("---")
     c1,c2 = st.columns(2)
     with c1:
         sp=yfd("^GSPC","1y")
         if len(sp)>0:
-            st.plotly_chart(lchart({"S&P 500 지수":sp['Close']},
+            st.plotly_chart(lchart({T("S&P 500 지수", LANG):sp['Close']},
                 "S&P 500 지수 (1년)", ya="지수 (포인트)", src="Yahoo Finance (^GSPC)"), use_container_width=True)
     with c2:
         g=yfd("GC=F","1y")
         if len(g)>0:
-            st.plotly_chart(lchart({"금 선물":g['Close']},
+            st.plotly_chart(lchart({T("금 선물", LANG):g['Close']},
                 "금(Gold) 선물 가격 (1년)", ya="USD / 온스", src="Yahoo Finance (GC=F, COMEX)"), use_container_width=True)
     c3,c4 = st.columns(2)
     with c3:
         t=fred("T10Y2Y","2020-01-01")
         if len(t)>0:
-            fig=lchart({"10Y-2Y 금리차":t}, "일드커브 스프레드 (10Y-2Y 국채)", ya="금리차 (%pt)", src="FRED (T10Y2Y)", zero=True)
+            fig=lchart({T("10Y-2Y 금리차", LANG):t}, "일드커브 스프레드 (10Y-2Y 국채)", ya="금리차 (%pt)", src="FRED (T10Y2Y)", zero=True)
             fig.add_hline(y=0,line_color=C['red'],line_width=2,annotation_text="역전 기준선",annotation_font_size=9,annotation_font_color=C['red'])
             st.plotly_chart(fig, use_container_width=True)
     with c4:
         h=fred("BAMLH0A0HYM2","2020-01-01")
         if len(h)>0:
-            fig=lchart({"HY 스프레드":h}, "하이일드 크레딧 스프레드", ya="스프레드 (%pt)", src="FRED (BAMLH0A0HYM2, ICE BofA)")
+            fig=lchart({T("HY 스프레드", LANG):h}, "하이일드 크레딧 스프레드", ya="스프레드 (%pt)", src="FRED (BAMLH0A0HYM2, ICE BofA)")
             fig.add_hline(y=5,line_dash="dash",line_color=C['accent'],annotation_text="경고 5%",annotation_font_size=9)
             st.plotly_chart(fig, use_container_width=True)
     st.markdown(T("### 📊 S&P 500 섹터별 6개월 수익률", LANG))
-    sm = {'에너지(XLE)':'XLE','소재(XLB)':'XLB','산업재(XLI)':'XLI','소비재(XLY)':'XLY',
+    sm = {T('에너지(XLE)', LANG):'XLE','소재(XLB)':'XLB','산업재(XLI)':'XLI','소비재(XLY)':'XLY',
           '필수소비(XLP)':'XLP','헬스케어(XLV)':'XLV','금융(XLF)':'XLF','IT(XLK)':'XLK',
           '통신(XLC)':'XLC','유틸리티(XLU)':'XLU','부동산(XLRE)':'XLRE'}
     rets={}
@@ -477,12 +477,12 @@ elif page == "📈 거시경제 지표":
         c1,c2=st.columns(2)
         with c1:
             u=fred("UNRATE","2000-01-01")
-            if len(u)>0: st.plotly_chart(lchart({"실업률":u},"미국 실업률 (U-3)",ya="실업률 (%)",src="FRED (UNRATE, BLS)"),use_container_width=True)
+            if len(u)>0: st.plotly_chart(lchart({T("실업률", LANG):u},"미국 실업률 (U-3)",ya="실업률 (%)",src="FRED (UNRATE, BLS)"),use_container_width=True)
         with c2:
             ic=fred("ICSA","2020-01-01")
-            if len(ic)>0: st.plotly_chart(lchart({"신규실업수당":ic},"신규 실업수당 청구 (주간)",ya="건수",src="FRED (ICSA, 미 노동부)"),use_container_width=True)
+            if len(ic)>0: st.plotly_chart(lchart({T("신규실업수당", LANG):ic},"신규 실업수당 청구 (주간)",ya="건수",src="FRED (ICSA, 미 노동부)"),use_container_width=True)
         um=fred("UMCSENT","2000-01-01")
-        if len(um)>0: st.plotly_chart(lchart({"소비자신뢰":um},"미시간대 소비자신뢰지수",ya="지수 (1966=100)",src="FRED (UMCSENT)"),use_container_width=True)
+        if len(um)>0: st.plotly_chart(lchart({T("소비자신뢰", LANG):um},"미시간대 소비자신뢰지수",ya="지수 (1966=100)",src="FRED (UMCSENT)"),use_container_width=True)
     with tab2:
         c1,c2=st.columns(2)
         with c1:
@@ -503,7 +503,7 @@ elif page == "📈 거시경제 지표":
         c1,c2=st.columns(2)
         with c1:
             ff=fred("FEDFUNDS","2000-01-01")
-            if len(ff)>0: st.plotly_chart(lchart({"FF금리":ff},"연방기금금리 (Fed Funds Rate)",ya="금리 (%)",src="FRED (FEDFUNDS, 연준)"),use_container_width=True)
+            if len(ff)>0: st.plotly_chart(lchart({T("FF금리", LANG):ff},"연방기금금리 (Fed Funds Rate)",ya="금리 (%)",src="FRED (FEDFUNDS, 연준)"),use_container_width=True)
         with c2:
             t=fred("T10Y2Y","2000-01-01")
             if len(t)>0:
@@ -532,7 +532,7 @@ elif page == "📋 미국경제 종합표":
 
         # Gather data
         indicators = {
-            "소비자신뢰지수": ("UMCSENT", ""),
+            T("소비자신뢰지수", LANG): ("UMCSENT", ""),
             "ISM제조업PMI": ("MANEMP", "인덱스 대체"),  # proxy
             "CPI YoY (%)": ("CPIAUCSL", "YoY"),
             "PPI YoY (%)": ("PPIACO", "YoY"),
@@ -604,7 +604,7 @@ elif page == "📋 미국경제 종합표":
             wages = fred("CES0500000003", "2010-01-01")  # Average Hourly Earnings
             if len(wages) > 0:
                 wages_yoy = wages.pct_change(12) * 100
-                fig = lchart({"평균 시급 YoY": wages_yoy.dropna()},
+                fig = lchart({T("평균 시급 YoY", LANG): wages_yoy.dropna()},
                     "평균 시급 상승률 (YoY)", ya="상승률 (%)",
                     src="FRED (CES0500000003, 평균 시급)")
                 fig.add_hline(y=3, line_dash="dot", line_color=C['accent'],
@@ -622,13 +622,13 @@ elif page == "📋 미국경제 종합표":
             ipm = fred("INDPRO", "2000-01-01")
             if len(ipm) > 0:
                 ipm_yoy = ipm.pct_change(12) * 100
-                fig = lchart({"산업생산 YoY": ipm_yoy.dropna()},
+                fig = lchart({T("산업생산 YoY", LANG): ipm_yoy.dropna()},
                     "산업생산지수 (YoY) - ISM PMI 대체지표",
                     ya="증감률 (%)", src="FRED (INDPRO)", zero=True)
                 st.plotly_chart(fig, use_container_width=True)
         else:
             # PMI chart
-            fig = lchart({"ISM 제조업 PMI": napm}, "ISM 제조업 경기지수",
+            fig = lchart({T("ISM 제조업 PMI", LANG): napm}, "ISM 제조업 경기지수",
                 ya="PMI (50=확장/위축 기준)", src="FRED (NAPM)")
             fig.add_hline(y=50, line_dash="dash", line_color=C['red'],
                 annotation_text="확장/위축 기준선 (50)", annotation_font_size=9)
@@ -638,7 +638,7 @@ elif page == "📋 미국경제 종합표":
         rs = fred("RSAFS", "2010-01-01")
         if len(rs) > 0:
             rs_yoy = rs.pct_change(12) * 100
-            fig = lchart({"소매판매 YoY": rs_yoy.dropna()},
+            fig = lchart({T("소매판매 YoY", LANG): rs_yoy.dropna()},
                 "미국 소매판매 (YoY)", ya="증감률 (%)",
                 src="FRED (RSAFS)", zero=True)
             st.plotly_chart(fig, use_container_width=True)
@@ -648,13 +648,13 @@ elif page == "📋 미국경제 종합표":
         with c1:
             hs = fred("HOUST", "2010-01-01")
             if len(hs) > 0:
-                fig = lchart({"신규주택 착공": hs},
+                fig = lchart({T("신규주택 착공", LANG): hs},
                     "신규 주택 착공 건수", ya="건수 (천)", src="FRED (HOUST)")
                 st.plotly_chart(fig, use_container_width=True)
         with c2:
             mort = fred("MORTGAGE30US", "2010-01-01")
             if len(mort) > 0:
-                fig = lchart({"30년 고정 모기지": mort},
+                fig = lchart({T("30년 고정 모기지", LANG): mort},
                     "30년 고정 모기지 금리", ya="금리 (%)", src="FRED (MORTGAGE30US)")
                 st.plotly_chart(fig, use_container_width=True)
 
@@ -692,17 +692,17 @@ elif page == "🥇 금·원자재·에너지":
     with tab1:
         gp=st.selectbox(T("기간", LANG),["1y","2y","5y","10y"],index=2,key="gp")
         g=yfd("GC=F",gp)
-        if len(g)>0: st.plotly_chart(lchart({"금 선물":g['Close']},f"금(Gold) 선물 ({gp})",ya="USD / 온스",src="Yahoo Finance (GC=F, COMEX)"),use_container_width=True)
+        if len(g)>0: st.plotly_chart(lchart({T("금 선물", LANG):g['Close']},f"금(Gold) 선물 ({gp})",ya="USD / 온스",src="Yahoo Finance (GC=F, COMEX)"),use_container_width=True)
         c1,c2=st.columns(2)
         with c1:
             gl,sp=yfd("GLD","5y"),yfd("SPY","5y")
             if len(gl)>0 and len(sp)>0:
-                st.plotly_chart(lchart({"GLD (금ETF)":(gl['Close']/gl['Close'].iloc[0]-1)*100,"SPY (S&P500)":(sp['Close']/sp['Close'].iloc[0]-1)*100},
+                st.plotly_chart(lchart({T("GLD (금ETF)", LANG):(gl['Close']/gl['Close'].iloc[0]-1)*100,"SPY (S&P500)":(sp['Close']/sp['Close'].iloc[0]-1)*100},
                     "금 ETF vs S&P 500 (5년)",ya="누적수익률 (%)",src="Yahoo Finance (GLD, SPY)",zero=True),use_container_width=True)
         with c2:
             gx=yfd("GDX","5y")
             if len(gx)>0 and len(gl)>0:
-                st.plotly_chart(lchart({"GDX (금광주)":(gx['Close']/gx['Close'].iloc[0]-1)*100,"GLD (금ETF)":(gl['Close']/gl['Close'].iloc[0]-1)*100},
+                st.plotly_chart(lchart({T("GDX (금광주)", LANG):(gx['Close']/gx['Close'].iloc[0]-1)*100,"GLD (금ETF)":(gl['Close']/gl['Close'].iloc[0]-1)*100},
                     "금광주 vs 금 ETF (5년)",ya="누적수익률 (%)",src="Yahoo Finance (GDX, GLD)",zero=True),use_container_width=True)
         st.markdown(T("### 금 vs 실질금리", LANG))
         tips=fred("DFII10","2010-01-01"); gf=yfd("GC=F","10y")
@@ -785,14 +785,14 @@ elif page == "🥇 금·원자재·에너지":
                 """)
 
     with tab2:
-        cm={"금":"GC=F","은":"SI=F","WTI원유":"CL=F","구리":"HG=F","천연가스":"NG=F"}
+        cm={T("금", LANG):"GC=F","은":"SI=F","WTI원유":"CL=F","구리":"HG=F","천연가스":"NG=F"}
         cd={}
         for n,t in cm.items():
             d=yfd(t,"1y")
             if len(d)>0: cd[n]=(d['Close']/d['Close'].iloc[0]-1)*100
         if cd: st.plotly_chart(lchart(cd,"원자재 1년 퍼포먼스",ya="누적수익률 (%)",src="Yahoo Finance (COMEX/NYMEX)",zero=True),use_container_width=True)
         st.markdown(T("### Gold → Copper → Energy 순환", LANG))
-        rt={"금광주(GDX)":"GDX","구리광산(COPX)":"COPX","에너지(XLE)":"XLE"}
+        rt={T("금광주(GDX)", LANG):"GDX","구리광산(COPX)":"COPX","에너지(XLE)":"XLE"}
         rd={}
         for n,t in rt.items():
             d=yfd(t,"5y")
@@ -802,7 +802,7 @@ elif page == "🥇 금·원자재·에너지":
     with tab3:
         o=yfd("CL=F","5y")
         if len(o)>0:
-            fig=lchart({"WTI 원유":o['Close']},"WTI 원유 선물 (5년)",ya="USD / 배럴",src="Yahoo Finance (CL=F, NYMEX)")
+            fig=lchart({T("WTI 원유", LANG):o['Close']},"WTI 원유 선물 (5년)",ya="USD / 배럴",src="Yahoo Finance (CL=F, NYMEX)")
             fig.add_hline(y=50,line_dash="dot",line_color=C['accent'],annotation_text="평균 생산비 ~$50/bbl",annotation_font_size=9)
             fig.add_hline(y=30,line_dash="dot",line_color=C['sub'],annotation_text="OPEC 생산비 ~$30/bbl",annotation_font_size=9)
             fig.add_hline(y=80,line_dash="dot",line_color=C['red'],annotation_text="고점 구간 $80+",annotation_font_size=9)
@@ -814,7 +814,7 @@ elif page == "🥇 금·원자재·에너지":
             brent = yfd("BZ=F", "5y")
             if len(brent) > 0 and len(o) > 0:
                 fig = lchart({
-                    "WTI (미국)": o['Close'],
+                    T("WTI (미국)", LANG): o['Close'],
                     "Brent (유럽)": brent['Close']
                 }, "WTI vs Brent 원유 가격 비교", ya="USD / 배럴",
                 src="Yahoo Finance (CL=F, BZ=F)")
@@ -822,7 +822,7 @@ elif page == "🥇 금·원자재·에너지":
         with c2:
             ng = yfd("NG=F", "2y")
             if len(ng) > 0:
-                fig = lchart({"천연가스": ng['Close']},
+                fig = lchart({T("천연가스", LANG): ng['Close']},
                     "미국 천연가스 (Henry Hub)", ya="USD / MMBtu",
                     src="Yahoo Finance (NG=F, NYMEX)")
                 st.plotly_chart(fig, use_container_width=True)
@@ -837,7 +837,7 @@ elif page == "🥇 금·원자재·에너지":
             opec = fred("POILBREUSDM", "2018-01-01")  # Brent price as proxy
             global_prod = fred("IPG211111CN", "2010-01-01")  # US crude oil production
             if len(global_prod) > 0:
-                fig = lchart({"미국 원유 생산": global_prod},
+                fig = lchart({T("미국 원유 생산", LANG): global_prod},
                     "미국 원유 생산 지수 (셰일 생산)",
                     ya="지수 (2012=100)",
                     src="FRED (IPG211111CN, 미 에너지부)")
@@ -846,7 +846,7 @@ elif page == "🥇 금·원자재·에너지":
             # US crude oil stocks
             stocks = fred("WCESTUS1", "2018-01-01")
             if len(stocks) > 0:
-                fig = lchart({"미국 원유 재고": stocks},
+                fig = lchart({T("미국 원유 재고", LANG): stocks},
                     "미국 상업용 원유 재고 (주간)",
                     ya="재고 (천 배럴)",
                     src="FRED (WCESTUS1, 미 EIA)")
@@ -915,7 +915,7 @@ elif page == "📅 시즌성 & 사이클":
 elif page == "🎯 섹터 로테이션":
     st.title(T("🎯 섹터 로테이션", LANG))
     per=st.selectbox(T("기간", LANG),["1mo","3mo","6mo","1y"],index=2,key="sr")
-    sm={'에너지(XLE)':'XLE','소재(XLB)':'XLB','산업재(XLI)':'XLI','소비재(XLY)':'XLY',
+    sm={T('에너지(XLE)', LANG):'XLE','소재(XLB)':'XLB','산업재(XLI)':'XLI','소비재(XLY)':'XLY',
         '필수소비(XLP)':'XLP','헬스케어(XLV)':'XLV','금융(XLF)':'XLF','IT(XLK)':'XLK',
         '통신(XLC)':'XLC','유틸리티(XLU)':'XLU','부동산(XLRE)':'XLRE'}
     rets={}
@@ -936,21 +936,21 @@ elif page == "🎯 섹터 로테이션":
         if len(dg)>0:
             cur,prev=dg.iloc[-1],dg.iloc[-30] if len(dg)>30 else dg.iloc[0]
             st.metric(T("10Y 국채 (FRED DGS10)", LANG),f"{cur:.2f}%",f"{cur-prev:+.2f}%pt")
-            st.caption(T("IT/REIT 유리 ✅", LANG) if cur<prev else "금융주 유리 📈")
+            st.caption(T("IT/REIT 유리 ✅", LANG) if cur<prev else T("금융주 유리 📈", LANG))
     with c2:
         st.markdown(T("**📊 변수2: 경기**", LANG))
         um=fred("UMCSENT","2024-01-01")
         if len(um)>0:
             cur,prev=um.iloc[-1],um.iloc[-3] if len(um)>3 else um.iloc[0]
             st.metric(T("소비자신뢰 (FRED UMCSENT)", LANG),f"{cur:.1f}",f"{cur-prev:+.1f}")
-            st.caption(T("소비재 유리 ✅", LANG) if cur>prev else "디펜시브 유리 🛡️")
+            st.caption(T("소비재 유리 ✅", LANG) if cur>prev else T("디펜시브 유리 🛡️", LANG))
     with c3:
         st.markdown(T("**🔥 변수3: 인플레**", LANG))
         be=fred("T10YIE","2024-01-01")
         if len(be)>0:
             cur,prev=be.iloc[-1],be.iloc[-30] if len(be)>30 else be.iloc[0]
             st.metric(T("기대인플레 (FRED T10YIE)", LANG),f"{cur:.2f}%",f"{cur-prev:+.2f}%pt")
-            st.caption(T("에너지/소재 유리 🛢️", LANG) if cur>prev else "성장주 유리 💻")
+            st.caption(T("에너지/소재 유리 🛢️", LANG) if cur>prev else T("성장주 유리 💻", LANG))
 
     # ── 종목 스크리너로 연결 ──
     st.markdown("---")
@@ -959,7 +959,8 @@ elif page == "🎯 섹터 로테이션":
 elif page == "🌍 글로벌 자산 수익률":
     st.title(T("🌍 글로벌 주요 자산 수익률", LANG))
     st.caption(T("글로벌 주요 자산 수익률 비교 | Yahoo Finance 실시간", LANG))
-    yr=st.selectbox(T("비교", LANG),["올해 YTD","2025년","2024년"],index=0)
+    yr=st.selectbox(T("비교", LANG),["올해 YTD","2025년","2024년"],index=0,
+                    format_func=lambda x: T(x, LANG))   # 값은 한국어 유지, 표시만 번역
     ps=f"{datetime.now().year}-01-01" if yr=="올해 YTD" else "2025-01-01" if yr=="2025년" else "2024-01-01"
     assets={"S&P 500":"^GSPC","NASDAQ":"^IXIC","다우30":"^DJI","Russell 2000":"^RUT",
         "TOPIX":"^TOPX","닛케이225":"^N225","DAX":"^GDAXI","FTSE":"^FTSE",
@@ -972,7 +973,7 @@ elif page == "🌍 글로벌 자산 수익률":
         try:
             d=yf.download(t,start=ps,progress=False)
             if isinstance(d.columns,pd.MultiIndex): d.columns=d.columns.get_level_values(0)
-            if len(d)>1: rl.append({"자산":n,"티커":t,"수익률":((d['Close'].iloc[-1]/d['Close'].iloc[0])-1)*100})
+            if len(d)>1: rl.append({T("자산", LANG):n,"티커":t,"수익률":((d['Close'].iloc[-1]/d['Close'].iloc[0])-1)*100})
         except: pass
     if rl:
         df=pd.DataFrame(rl).sort_values("수익률",ascending=True)
