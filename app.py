@@ -74,9 +74,14 @@ def calc_pres_cycle():
 
 # === 차트 유틸 ===
 def layout(fig, title, ya="", src="", h=400, xrot=0):
+    # 차트 제목·축 라벨·출처는 모든 그래프가 이 함수를 거치므로 여기서 한 번에 번역한다
+    _L = globals().get("LANG", "ko")
+    title = T(title, _L)
+    ya = T(ya, _L)
+    _src_label = "出典" if _L == "ja" else "출처"
     ann = []
     if src:
-        ann.append(dict(text=f"📊 출처: {src}", xref="paper", yref="paper",
+        ann.append(dict(text=f"📊 {_src_label}: {src}", xref="paper", yref="paper",
             x=0, y=-0.28, showarrow=False, font=dict(size=9, color=C['sub'])))
     fig.update_layout(
         title=dict(text=f"<b>{title}</b>", font=dict(size=14, color=C['white']), x=0.01, y=0.98),
@@ -144,7 +149,7 @@ if page == "📖 투자 판단 가이드":
     tab1, tab2, tab3, tab4, tab5 = st.tabs([T("🗺️ 대시보드 지도", LANG), T("🎯 3대 핵심 변수", LANG), T("🧭 판단 프레임워크", LANG), T("📊 지표 해석 가이드", LANG), T("💼 자산 단계별 전략", LANG)])
 
     with tab1:
-        st.markdown("## 🗺️ 어떤 페이지를 언제 봐야 하나")
+        st.markdown(T("## 🗺️ 어떤 페이지를 언제 봐야 하나", LANG))
         st.markdown(T("""
 | 시점/상황 | 추천 페이지 | 핵심 체크 포인트 |
 |---|---|---|
@@ -158,7 +163,7 @@ if page == "📖 투자 판단 가이드":
 | **계절 전략** | 📅 시즌성 & 사이클 | 현재 월 승률, 대통령 사이클 연차 |
 """, LANG))
 
-        st.markdown("## 💡 대시보드 활용의 5가지 원칙")
+        st.markdown(T("## 💡 대시보드 활용의 5가지 원칙", LANG))
         st.markdown(T("""
 1. **"과거 데이터를 우선, 뉴스는 후순위"** — 이슈(재료)는 시장이 이미 반영한 경우가 많음. 실제 움직인 데이터로 판단.
 2. **"하나의 지표만 보지 말고 여러 지표의 일치를 확인"** — 예: 일드커브 역전 + HY 스프레드 상승 + VIX 급등이 동시 발생해야 신뢰.
@@ -168,7 +173,7 @@ if page == "📖 투자 판단 가이드":
 """, LANG))
 
     with tab2:
-        st.markdown("## 🎯 3대 핵심 변수 모니터링")
+        st.markdown(T("## 🎯 3대 핵심 변수 모니터링", LANG))
         st.caption(T("모든 투자 판단의 출발점", LANG))
 
         st.markdown(T("""
@@ -203,10 +208,10 @@ if page == "📖 투자 판단 가이드":
   - 기대인플레 > 2.5% = 장기 인플레 고착 우려
 """, LANG))
 
-        st.info("💡 **실전 팁**: 🎯 섹터 로테이션 페이지에서 이 3개 변수의 현재 방향을 실시간으로 볼 수 있습니다.")
+        st.info(T("💡 **실전 팁**: 🎯 섹터 로테이션 페이지에서 이 3개 변수의 현재 방향을 실시간으로 볼 수 있습니다.", LANG))
 
     with tab3:
-        st.markdown("## 🧭 시장 국면별 판단 프레임워크")
+        st.markdown(T("## 🧭 시장 국면별 판단 프레임워크", LANG))
 
         st.markdown(T("""
 ### 📍 현재 국면을 파악하는 체크리스트
@@ -246,12 +251,12 @@ if page == "📖 투자 판단 가이드":
 | 🔵 **회복 초기** | 저점 3개월 + 지표 개선 | 성장주·경기민감주 재진입 |
 """, LANG))
 
-        st.warning("⚠️ **2026년 4월 현재 체크포인트**: 일드커브 상태, 크레딧 스프레드, VIX를 매일 확인하세요. 🏠 종합 대시보드에서 3개 차트를 한 화면에 볼 수 있습니다.")
+        st.warning(T("⚠️ **2026년 4월 현재 체크포인트**: 일드커브 상태, 크레딧 스프레드, VIX를 매일 확인하세요. 🏠 종합 대시보드에서 3개 차트를 한 화면에 볼 수 있습니다.", LANG))
 
     with tab4:
-        st.markdown("## 📊 개별 지표 해석 가이드")
+        st.markdown(T("## 📊 개별 지표 해석 가이드", LANG))
 
-        with st.expander("🧑‍💼 실업률 (Unemployment Rate)"):
+        with st.expander(T("🧑‍💼 실업률 (Unemployment Rate)", LANG)):
             st.markdown(T("""
 - **출처**: FRED (UNRATE), 미 노동통계국 BLS, 월간 발표
 - **정상 범위**: 3.5% ~ 5.0%
@@ -262,7 +267,7 @@ if page == "📖 투자 판단 가이드":
 - **투자 판단**: 상승 반전 시 디펜시브·금·채권 비중 확대
 """, LANG))
 
-        with st.expander("🔥 CPI (소비자물가지수)"):
+        with st.expander(T("🔥 CPI (소비자물가지수)", LANG)):
             st.markdown(T("""
 - **출처**: FRED (CPIAUCSL), BLS, 월간 발표
 - **주목 수치**:
@@ -273,7 +278,7 @@ if page == "📖 투자 판단 가이드":
 - **투자 판단**: 상승 추세 → 에너지·금·실물자산 / 하락 추세 → 성장주·채권
 """, LANG))
 
-        with st.expander("📉 일드커브 (Yield Curve, 10Y-2Y)"):
+        with st.expander(T("📉 일드커브 (Yield Curve, 10Y-2Y)", LANG)):
             st.markdown(T("""
 - **출처**: FRED (T10Y2Y)
 - **정상**: 양수 (장기금리 > 단기금리)
@@ -283,7 +288,7 @@ if page == "📖 투자 판단 가이드":
 - **투자 판단**: 역전 시작 → 현금 확보 / 정상화 시 → 디펜시브 전환
 """, LANG))
 
-        with st.expander("⚠️ HY 크레딧 스프레드 (ICE BofA)"):
+        with st.expander(T("⚠️ HY 크레딧 스프레드 (ICE BofA)", LANG)):
             st.markdown(T("""
 - **출처**: FRED (BAMLH0A0HYM2)
 - **의미**: 하이일드 채권과 미국채의 금리차
@@ -296,7 +301,7 @@ if page == "📖 투자 판단 가이드":
 - **투자 판단**: 5%pt 돌파 시 주식 비중 축소 고려
 """, LANG))
 
-        with st.expander("😱 VIX (공포지수)"):
+        with st.expander(T("😱 VIX (공포지수)", LANG)):
             st.markdown(T("""
 - **출처**: Yahoo Finance (^VIX), CBOE
 - **의미**: S&P500 옵션의 내재변동성
@@ -309,7 +314,7 @@ if page == "📖 투자 판단 가이드":
 - **투자 판단**: 30+ 에서 분할 매수, 15 미만 장기 지속 시 현금 확보
 """, LANG))
 
-        with st.expander("🥇 금 (Gold) 판단 기준"):
+        with st.expander(T("🥇 금 (Gold) 판단 기준", LANG)):
             st.markdown(T("""
 - **핵심 관계**: 금 가격 ∝ -실질금리 (역상관)
   - 실질금리 = 명목금리 - 기대인플레
@@ -322,7 +327,7 @@ if page == "📖 투자 판단 가이드":
 - **투자 판단**: 실질금리 하락 + 지정학 리스크 = 매수 타이밍
 """, LANG))
 
-        with st.expander("🛢️ 원유 (Oil) 판단 기준"):
+        with st.expander(T("🛢️ 원유 (Oil) 판단 기준", LANG)):
             st.markdown(T("""
 - **생산비 하한선**: 글로벌 평균 약 $50/배럴 (OPEC $30, 셰일 $55)
 - **$50 미만 지속 시**: 생산 감소 → 반등 가능성 높음
@@ -332,7 +337,7 @@ if page == "📖 투자 판단 가이드":
 """, LANG))
 
     with tab5:
-        st.markdown("## 💼 자산 규모별 투자 전략")
+        st.markdown(T("## 💼 자산 규모별 투자 전략", LANG))
         st.caption(T("자산 규모별 단계별 접근", LANG))
 
         st.markdown(T("""
@@ -452,7 +457,7 @@ elif page == "🏠 종합 대시보드":
             fig=lchart({"HY 스프레드":h}, "하이일드 크레딧 스프레드", ya="스프레드 (%pt)", src="FRED (BAMLH0A0HYM2, ICE BofA)")
             fig.add_hline(y=5,line_dash="dash",line_color=C['accent'],annotation_text="경고 5%",annotation_font_size=9)
             st.plotly_chart(fig, use_container_width=True)
-    st.markdown("### 📊 S&P 500 섹터별 6개월 수익률")
+    st.markdown(T("### 📊 S&P 500 섹터별 6개월 수익률", LANG))
     sm = {'에너지(XLE)':'XLE','소재(XLB)':'XLB','산업재(XLI)':'XLI','소비재(XLY)':'XLY',
           '필수소비(XLP)':'XLP','헬스케어(XLV)':'XLV','금융(XLF)':'XLF','IT(XLK)':'XLK',
           '통신(XLC)':'XLC','유틸리티(XLU)':'XLU','부동산(XLRE)':'XLRE'}
@@ -505,7 +510,7 @@ elif page == "📈 거시경제 지표":
                 fig=lchart({"10Y-2Y":t},"일드커브 (10Y-2Y 국채금리차)",ya="금리차 (%pt)",src="FRED (T10Y2Y)",zero=True)
                 fig.add_hline(y=0,line_color=C['red'],line_width=2,annotation_text="역전 = 침체 선행신호",annotation_font_size=9,annotation_font_color=C['red'])
                 st.plotly_chart(fig,use_container_width=True)
-        st.markdown("### 🌍 주요국 국채 금리 비교")
+        st.markdown(T("### 🌍 주요국 국채 금리 비교", LANG))
         rd={}
         u10=fred("DGS10","2023-01-01")
         if len(u10)>0: rd["미국 10Y"]=u10
@@ -522,7 +527,7 @@ elif page == "📋 미국경제 종합표":
     tab1, tab2, tab3 = st.tabs([T("📊 종합 테이블", LANG), T("💼 고용 상세", LANG), T("🏭 ISM & 생산", LANG)])
 
     with tab1:
-        st.markdown("### 📅 월별 주요 경제지표 추이 (최근 15개월)")
+        st.markdown(T("### 📅 월별 주요 경제지표 추이 (최근 15개월)", LANG))
         st.caption(T("녹색: 전월 대비 개선 / 빨간색: 악화", LANG))
 
         # Gather data
@@ -550,7 +555,7 @@ elif page == "📋 미국경제 종합표":
 
         if df_list:
             df = pd.DataFrame(df_list).T
-            df.index.name = "월"
+            df.index.name = T("월", LANG)
             df = df.iloc[::-1]  # 최신이 위로
 
             def highlight_change(col):
@@ -571,7 +576,7 @@ elif page == "📋 미국경제 종합표":
             st.caption(T("📊 출처: FRED (세인트루이스 연준) | 녹색=전월 대비 지표 개선, 빨강=악화 (실업률·CPI는 낮을수록 좋음)", LANG))
 
     with tab2:
-        st.markdown("### 💼 미국 고용 상황 (NFP·실업률·임금)")
+        st.markdown(T("### 💼 미국 고용 상황 (NFP·실업률·임금)", LANG))
         st.caption(T("NFP(비농업고용) + 실업률 + 평균 시급 추이", LANG))
 
         c1, c2 = st.columns(2)
@@ -583,12 +588,12 @@ elif page == "📋 미국경제 종합표":
                 recent = nfp_mom.tail(60)
                 colors = [C['green'] if v > 0 else C['red'] for v in recent.values]
                 fig.add_trace(go.Bar(x=recent.index, y=recent.values, marker_color=colors,
-                    name="월간 고용 증감", hovertemplate='%{x|%Y-%m}: %{y:,.0f}<extra></extra>'))
+                    name=T("월간 고용 증감", LANG), hovertemplate='%{x|%Y-%m}: %{y:,.0f}<extra></extra>'))
                 unrate = fred("UNRATE", "2010-01-01")
                 if len(unrate) > 0:
                     unrate_recent = unrate.tail(60)
                     fig.add_trace(go.Scatter(x=unrate_recent.index, y=unrate_recent.values*200,
-                        name="실업률 x200 (우축 참조)", yaxis="y2", line=dict(color=C['accent'], width=2)))
+                        name=T("실업률 x200 (우축 참조)", LANG), yaxis="y2", line=dict(color=C['accent'], width=2)))
                     fig.update_layout(yaxis2=dict(overlaying='y', side='right', title="실업률 (%)",
                         tickvals=[3*200, 4*200, 5*200, 6*200], ticktext=['3%', '4%', '5%', '6%']))
                 layout(fig, "NFP 월간 고용 증감 + 실업률 (최근 5년)",
@@ -607,7 +612,7 @@ elif page == "📋 미국경제 종합표":
                 st.plotly_chart(fig, use_container_width=True)
 
     with tab3:
-        st.markdown("### 🏭 ISM & 산업 활동 지표")
+        st.markdown(T("### 🏭 ISM & 산업 활동 지표", LANG))
         st.caption(T("ISM PMI · 산업생산 · 소매판매 · 주택 지표", LANG))
 
         # ISM proxy via FRED (실제 ISM PMI는 유료, NAPM은 대체)
@@ -662,7 +667,7 @@ elif page == "💰 시장 밸류에이션":
         d=yfd(t,period)
         if len(d)>0: id_d[n]=(d['Close']/d['Close'].iloc[0]-1)*100
     if id_d: st.plotly_chart(lchart(id_d,f"미국 주요 지수 상대 퍼포먼스 ({period})",ya="누적수익률 (%)",src="Yahoo Finance",zero=True),use_container_width=True)
-    st.markdown("### 🌍 글로벌 지수 비교")
+    st.markdown(T("### 🌍 글로벌 지수 비교", LANG))
     gl={"S&P500":"^GSPC","TOPIX":"^TOPX","DAX":"^GDAXI","SENSEX":"^BSESN","EEM":"EEM"}
     gd={}
     for n,t in gl.items():
@@ -678,8 +683,8 @@ elif page == "🔄 자금흐름 & 심리":
         fig.add_hline(y=20,line_dash="dash",line_color=C['accent'],annotation_text="평균 20",annotation_font_size=9)
         fig.add_hline(y=30,line_dash="dash",line_color=C['red'],annotation_text="공포 30+",annotation_font_size=9)
         st.plotly_chart(fig,use_container_width=True)
-    st.markdown("### 📌 외부 참조")
-    st.markdown("- **Fear & Greed**: [CNN](https://money.cnn.com/data/fear-and-greed/) | **AAII 심리**: [AAII](https://www.aaii.com/sentimentsurvey) | **FINRA 마진**: [FINRA](https://www.finra.org/investors/learn-to-invest/advanced-investing/margin-statistics)")
+    st.markdown(T("### 📌 외부 참조", LANG))
+    st.markdown(T("- **Fear & Greed**: [CNN](https://money.cnn.com/data/fear-and-greed/) | **AAII 심리**: [AAII](https://www.aaii.com/sentimentsurvey) | **FINRA 마진**: [FINRA](https://www.finra.org/investors/learn-to-invest/advanced-investing/margin-statistics)", LANG))
 
 elif page == "🥇 금·원자재·에너지":
     st.title(T("🥇 금·원자재·에너지", LANG))
@@ -699,19 +704,19 @@ elif page == "🥇 금·원자재·에너지":
             if len(gx)>0 and len(gl)>0:
                 st.plotly_chart(lchart({"GDX (금광주)":(gx['Close']/gx['Close'].iloc[0]-1)*100,"GLD (금ETF)":(gl['Close']/gl['Close'].iloc[0]-1)*100},
                     "금광주 vs 금 ETF (5년)",ya="누적수익률 (%)",src="Yahoo Finance (GDX, GLD)",zero=True),use_container_width=True)
-        st.markdown("### 금 vs 실질금리")
+        st.markdown(T("### 금 vs 실질금리", LANG))
         tips=fred("DFII10","2010-01-01"); gf=yfd("GC=F","10y")
         if len(tips)>0 and len(gf)>0:
             fig=make_subplots(specs=[[{"secondary_y":True}]])
-            fig.add_trace(go.Scatter(x=gf.index,y=gf['Close'],name="금 (좌, USD/oz)",line=dict(color=C['accent'],width=2)),secondary_y=False)
-            fig.add_trace(go.Scatter(x=tips.index,y=tips.values,name="10Y 실질금리 (우, %, 역축)",line=dict(color=C['teal'],width=2)),secondary_y=True)
+            fig.add_trace(go.Scatter(x=gf.index,y=gf['Close'],name=T("금 (좌, USD/oz)", LANG),line=dict(color=C['accent'],width=2)),secondary_y=False)
+            fig.add_trace(go.Scatter(x=tips.index,y=tips.values,name=T("10Y 실질금리 (우, %, 역축)", LANG),line=dict(color=C['teal'],width=2)),secondary_y=True)
             fig.update_yaxes(title_text="금 (USD/oz)",secondary_y=False)
             fig.update_yaxes(title_text="실질금리 (%)",autorange="reversed",secondary_y=True)
             layout(fig,"금 가격 vs 10Y 실질금리 (역상관, 우축 반전)",src="Yahoo Finance (GC=F) + FRED (DFII10)")
             st.plotly_chart(fig,use_container_width=True)
 
         # 금 상승 사이클 비교
-        st.markdown("### 🔄 금 상승 패턴 비교: 3대 Bull Market")
+        st.markdown(T("### 🔄 금 상승 패턴 비교: 3대 Bull Market", LANG))
         st.caption(T("과거 금 Bull Market 3개 사이클 비교 - 각 사이클 시작점 = 100", LANG))
 
         # Historical gold data - use approximate historical prices
@@ -738,7 +743,7 @@ elif page == "🥇 금·원자재·에너지":
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(
                     x=g_c3_months, y=g_c3.values,
-                    name="2015~현재 사이클",
+                    name=T("2015~현재 사이클", LANG),
                     line=dict(color=C['red'], width=2.5),
                     hovertemplate='%{x:.0f}개월차: %{y:.0f}<extra></extra>'
                 ))
@@ -752,7 +757,7 @@ elif page == "🥇 금·원자재·에너지":
                           600, 680, 750, 820, 900, 1100, 1400, 1700, 2100, 2400, 2300]
                 fig.add_trace(go.Scatter(
                     x=past_months[:len(c1_hist)], y=c1_hist,
-                    name="1968-1980 사이클 (인플레·스태그플레이션)",
+                    name=T("1968-1980 사이클 (인플레·스태그플레이션)", LANG),
                     line=dict(color=C['blue'], width=2, dash='dot'),
                     hovertemplate='%{x:.0f}개월차: %{y:.0f}<extra></extra>'
                 ))
@@ -760,7 +765,7 @@ elif page == "🥇 금·원자재·에너지":
                           250, 275, 300, 330, 360, 400, 450, 500, 560, 620, 660]
                 fig.add_trace(go.Scatter(
                     x=past_months[:len(c2_hist)], y=c2_hist,
-                    name="1999-2011 사이클 (닷컴·금융위기)",
+                    name=T("1999-2011 사이클 (닷컴·금융위기)", LANG),
                     line=dict(color=C['teal'], width=2, dash='dash'),
                     hovertemplate='%{x:.0f}개월차: %{y:.0f}<extra></extra>'
                 ))
@@ -786,7 +791,7 @@ elif page == "🥇 금·원자재·에너지":
             d=yfd(t,"1y")
             if len(d)>0: cd[n]=(d['Close']/d['Close'].iloc[0]-1)*100
         if cd: st.plotly_chart(lchart(cd,"원자재 1년 퍼포먼스",ya="누적수익률 (%)",src="Yahoo Finance (COMEX/NYMEX)",zero=True),use_container_width=True)
-        st.markdown("### Gold → Copper → Energy 순환")
+        st.markdown(T("### Gold → Copper → Energy 순환", LANG))
         rt={"금광주(GDX)":"GDX","구리광산(COPX)":"COPX","에너지(XLE)":"XLE"}
         rd={}
         for n,t in rt.items():
@@ -823,7 +828,7 @@ elif page == "🥇 금·원자재·에너지":
                 st.plotly_chart(fig, use_container_width=True)
 
         # OPEC production data
-        st.markdown("### 🛢️ OPEC 원유 생산량 추이")
+        st.markdown(T("### 🛢️ OPEC 원유 생산량 추이", LANG))
         st.caption(T("FRED + EIA 데이터", LANG))
 
         c1, c2 = st.columns(2)
@@ -868,7 +873,7 @@ elif page == "📊 크레딧 & 채권":
     with c2:
         ig=fred("BAMLC0A0CM","2005-01-01")
         if len(ig)>0: st.plotly_chart(lchart({"IG OAS":ig},"투자등급 크레딧 스프레드 (ICE BofA Corp OAS)",ya="스프레드 (%pt)",src="FRED (BAMLC0A0CM)"),use_container_width=True)
-    st.markdown("### 미국채 금리 커브")
+    st.markdown(T("### 미국채 금리 커브", LANG))
     ms={"3M":"DGS3MO","1Y":"DGS1","2Y":"DGS2","5Y":"DGS5","10Y":"DGS10","30Y":"DGS30"}
     rs={}
     for n,c2 in ms.items():
@@ -919,31 +924,33 @@ elif page == "🎯 섹터 로테이션":
         if len(d)>1: rets[n]=((d['Close'].iloc[-1]/d['Close'].iloc[0])-1)*100
     if rets:
         sr=dict(sorted(rets.items(),key=lambda x:x[1]))
-        st.plotly_chart(hbar(list(sr.keys()),list(sr.values()),f"섹터별 수익률 ({per})",src="Yahoo Finance (SPDR ETF)",h=450),use_container_width=True)
-    st.markdown("### 🔑 3대 핵심 변수")
+        _keys = [T(k, LANG) for k in sr.keys()]          # 섹터명도 언어에 맞게
+        st.plotly_chart(hbar(_keys, list(sr.values()), f"섹터별 수익률 ({per})",
+                             src="Yahoo Finance (SPDR ETF)", h=450), use_container_width=True)
+    st.markdown(T("### 🔑 3대 핵심 변수", LANG))
     st.caption(T("금리 → IT/REIT | 경기 → 소비재/산업재 | 인플레 → 에너지/소재", LANG))
     c1,c2,c3=st.columns(3)
     with c1:
-        st.markdown("**📉 변수1: 금리**")
+        st.markdown(T("**📉 변수1: 금리**", LANG))
         dg=fred("DGS10","2024-01-01")
         if len(dg)>0:
             cur,prev=dg.iloc[-1],dg.iloc[-30] if len(dg)>30 else dg.iloc[0]
-            st.metric("10Y 국채 (FRED DGS10)",f"{cur:.2f}%",f"{cur-prev:+.2f}%pt")
-            st.caption("IT/REIT 유리 ✅" if cur<prev else "금융주 유리 📈")
+            st.metric(T("10Y 국채 (FRED DGS10)", LANG),f"{cur:.2f}%",f"{cur-prev:+.2f}%pt")
+            st.caption(T("IT/REIT 유리 ✅", LANG) if cur<prev else "금융주 유리 📈")
     with c2:
-        st.markdown("**📊 변수2: 경기**")
+        st.markdown(T("**📊 변수2: 경기**", LANG))
         um=fred("UMCSENT","2024-01-01")
         if len(um)>0:
             cur,prev=um.iloc[-1],um.iloc[-3] if len(um)>3 else um.iloc[0]
-            st.metric("소비자신뢰 (FRED UMCSENT)",f"{cur:.1f}",f"{cur-prev:+.1f}")
-            st.caption("소비재 유리 ✅" if cur>prev else "디펜시브 유리 🛡️")
+            st.metric(T("소비자신뢰 (FRED UMCSENT)", LANG),f"{cur:.1f}",f"{cur-prev:+.1f}")
+            st.caption(T("소비재 유리 ✅", LANG) if cur>prev else "디펜시브 유리 🛡️")
     with c3:
-        st.markdown("**🔥 변수3: 인플레**")
+        st.markdown(T("**🔥 변수3: 인플레**", LANG))
         be=fred("T10YIE","2024-01-01")
         if len(be)>0:
             cur,prev=be.iloc[-1],be.iloc[-30] if len(be)>30 else be.iloc[0]
-            st.metric("기대인플레 (FRED T10YIE)",f"{cur:.2f}%",f"{cur-prev:+.2f}%pt")
-            st.caption("에너지/소재 유리 🛢️" if cur>prev else "성장주 유리 💻")
+            st.metric(T("기대인플레 (FRED T10YIE)", LANG),f"{cur:.2f}%",f"{cur-prev:+.2f}%pt")
+            st.caption(T("에너지/소재 유리 🛢️", LANG) if cur>prev else "성장주 유리 💻")
 
     # ── 종목 스크리너로 연결 ──
     st.markdown("---")
