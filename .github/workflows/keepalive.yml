@@ -1,0 +1,29 @@
+name: Keep Awake
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keep-awake
+  cancel-in-progress: true
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+      - name: 앱 깨우기
+        run: python wake.py
