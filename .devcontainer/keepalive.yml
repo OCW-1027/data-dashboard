@@ -1,0 +1,37 @@
+name: Keep Awake
+
+# Streamlit Community Cloud 절전 해제.
+# HTTP 요청으로는 깨어나지 않는다 (서버 껍데기만 200 응답). 실제 브라우저로
+# "Yes, get this app back up!" 버튼을 눌러야 하므로 헤드리스 Chromium을 쓴다.
+# 4시간 간격 = 하루 6회. 회당 2~3분이라 월 500분 이내 (무료 한도 2,000분).
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keep-awake
+  cancel-in-progress: true
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+
+      - name: 앱 깨우기
+        run: python wake.py
